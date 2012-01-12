@@ -27,7 +27,6 @@
 		$(document).ready( function () {
 		    $(".secondary").click( function(){
 
-				console.log("Hola");
 				$ul = $("#search ul").empty();
 		
 				MercadoLibre.get("/sites/MLA/search?q=" + $("#query").val(), function(response) {
