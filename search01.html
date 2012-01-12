@@ -6,15 +6,14 @@
 </head>
 <body>
 
-	<link rel="stylesheet" type="text/css" href="http://ar.mercadolibre.io/examples/styles/chico-min-0.5.7.css">
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
-    <script src="http://sdk.mercadolibre.com/js/mercadolibre-0.0.6.js" charset="utf-8"></script>
-    <script src="http://ar.mercadolibre.io/examples/js/chico-min-0.5.7.js"></script>
+	<link href="http://mercadolibre.github.com/chico/build/chico-0.5.3.css" rel="stylesheet" type="text/css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+	<script src="http://mercadolibre.github.com/chico/build/chico-min-0.5.3.js"></script>
+	<script src="http://sdk.mercadolibre.com/js/mercadolibre-edge.js" charset="utf-8"></script>
 
     <div id="search">
       <form action="#" method="get">
-        <input type="hidden" name="limit" value="20">
-        <input type="text" name="q" id="q" value="iPod">
+        <input type="text" id="query" value="iPod">
 		<input type="submit" class="btn secondary" value='Buscar'>
       </form>
       <div class="results box" style="width: 400px;" >
@@ -24,45 +23,34 @@
     </div>
    
 	<script type="text/javascript">
-		var form;			
-		var itemId;
+
+		$(document).ready( function () {
+		    $(".secondary").click( function(){
+
+				console.log("Hola");
+				$ul = $("#search ul").empty();
 		
-		$(function(){	
-        $("#search form").submit(function() {
-	
-		var $form = $(this);
-		var $ul = $("#search ul").empty();
-          
-		MercadoLibre.get("/sites/MLA/search?" + $form.serialize(), function(response) {
-
-			var results = response[2].results;
-			var imagen;
-			for (var i = 0; i < results.length; i++) {
-			  var item = results[i];
-			  imagen= item.thumbnail;	
-			  $ul.append(
-			    "<li>" +
-			      "<a href='#' data-id='" + item.id + "'>" +
-			        "<img src='" + imagen + "' alt='" + item.title + "' width='90' height='90'>" +
-			      "</a>" +
-			    "</li>"
-			  );
-			}
-            $("#search .results").carousel();
-          });
-          return false;
-        });
-
- 		var oSubmit=$("#q");
-
-        if (oSubmit.val()==null || oSubmit.val().length == 0) {
-              oSubmit.val("iPod");
-         }
-        
-  		});
-
-		$(document).ready(function(){$("#search form").submit();});
+				MercadoLibre.get("/sites/MLA/search?q=" + $("#query").val(), function(response) {
+					var results = response[2].results;
+					for (var i = 0; i < results.length; i++) {
+					  var item = results[i];
+					  $ul.append(
+					    "<li>" +
+					      "<a href='#' data-id='" + item.id + "'>" +
+					        "<img src='" + item.thumbnail + "' alt='" + item.title + "' width='90' height='90'>" +
+					      "</a>" +
+					    "</li>"
+					  );
+					}
+		            $("#search .results").carousel();
+				});
+				return false;
+			
+			});
 		
+			$(".secondary").click();
+		});
+
 		</script>
 	</body>
 </html>
