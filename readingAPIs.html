@@ -1,0 +1,70 @@
+<html>
+<head>
+</head>
+<body >
+  <script>
+    function appendText(node,txt, clear)
+      {
+        if (!node.firstChild)
+          node.appendChild(document.createTextNode(''));
+        if (clear)
+          node.firstChild.nodeValue = ''
+        node.firstChild.nodeValue += txt;
+      }
+      function logout() {
+        MELI.logout();
+        appendText(document.getElementById("user"), 'n/a', true);
+        appendText(document.getElementById("name"), 'n/a', true);
+        appendText(document.getElementById("lastname"), 'n/a', true);
+      }
+      function login() {
+        MELI.login();
+        setTimeout('reload();', 2000);
+      }
+      function reload() {
+        location.reload();
+      }
+  
+    function getData() {
+          // Additional initialization code here
+      MELI.get("/users/me", {},function(data) {
+      if (data[0] == 200) {
+        appendText(document.getElementById("user"), data[2].nickname, true);
+        appendText(document.getElementById("name"), data[2].first_name, true);
+        appendText(document.getElementById("lastname"), data[2].last_name, true);
+      }});
+
+    
+    }
+    function loadData(){
+      
+    MELI.getLoginStatus(function(status) {
+      if (!status || status.state != "AUTHORIZED")
+        MELI.login(getData);
+      else
+        getData();
+    });
+}
+  window.mlAsyncInit = function() {
+    MELI.init({client_id: 4105});
+  };
+
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+     js = d.createElement('script'); js.id = id; js.async = true;
+     js.src = "http://tioborracho.github.com/mercadolibre.js/mercadolibre.js";
+     d.getElementsByTagName('head')[0].appendChild(js);
+   }(document));
+</script> 
+
+  <table>
+    <tr><td>Nicknema:</td><td id="user"></td></tr>
+    <tr><td>First Name:</td><td id="name"></td></tr>
+    <tr><td>Last Name:</td><td id="lastname"></td></tr>
+  </table>
+  <button onClick="loadData();">Get data</button>
+  <button onClick="logout();">Logout</button>
+</body>
+</html>
+
